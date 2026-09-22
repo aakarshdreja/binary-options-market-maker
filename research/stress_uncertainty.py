@@ -20,7 +20,7 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 import argparse
 import statistics
 
-import Market_Maker
+import market_maker
 from simulate_field import FIELD, FieldSession
 from validate_estimation import SCENARIOS
 
@@ -49,7 +49,7 @@ def main() -> None:
     parser.add_argument("--days", type=int, default=40)
     args = parser.parse_args()
 
-    base_multiplier = Market_Maker._UNCERTAINTY_MULTIPLIER
+    base_multiplier = market_maker._UNCERTAINTY_MULTIPLIER
     results: dict[float, list[float]] = {}
 
     print(f"\nhostile field: informed 50/65/80%, {args.days}-day sessions, short histories\n")
@@ -57,7 +57,7 @@ def main() -> None:
           f"{'win%':>7}{'bank':>6}")
     print("-" * 62)
     for multiplier in CELLS:
-        Market_Maker._UNCERTAINTY_MULTIPLIER = multiplier
+        market_maker._UNCERTAINTY_MULTIPLIER = multiplier
         pnls, bankruptcies, wins = run(args.sessions, args.days)
         results[multiplier] = pnls
         ordered = sorted(pnls)
@@ -75,7 +75,7 @@ def main() -> None:
           f"   t = {mean_difference / error if error else 0.0:+.2f}"
           f"   n = {len(differences)}")
 
-    Market_Maker._UNCERTAINTY_MULTIPLIER = base_multiplier
+    market_maker._UNCERTAINTY_MULTIPLIER = base_multiplier
 
 
 if __name__ == "__main__":

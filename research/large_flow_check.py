@@ -29,7 +29,7 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 import argparse
 import statistics
 
-import Market_Maker
+import market_maker
 from simulate_field import FIELD, FieldSession
 from validate_estimation import SCENARIOS
 
@@ -102,9 +102,9 @@ def main() -> None:
         print(f"{'constant':<30}{'value':>8}{'mean':>9}{'p10':>8}{'worst':>9}"
               f"{'win%':>7}{'bank':>6}{'d':>8}{'t':>7}")
         for name, incumbent, candidate in CANDIDATES:
-            setattr(Market_Maker, name, candidate)
+            setattr(market_maker, name, candidate)
             pnls, bankruptcies, wins = run(scale, args.sessions, args.days)
-            setattr(Market_Maker, name, incumbent)
+            setattr(market_maker, name, incumbent)
             differences = [a - b for a, b in zip(pnls, base)]
             mean_difference = statistics.fmean(differences)
             error = (statistics.stdev(differences) / (len(differences) ** 0.5)

@@ -41,8 +41,8 @@ import zlib
 import statistics
 from dataclasses import replace
 
-import Market_Maker
-from Market_Maker import (
+import market_maker
+from market_maker import (
     BinaryOption,
     FokOrder,
     MarketMaker,
@@ -262,7 +262,7 @@ CONFIGS: dict[str, dict[str, float]] = {
                          "_FOK_BASE_EDGE": 0.006},
 }
 
-DEFAULTS = {key: getattr(Market_Maker, key) for config in CONFIGS.values() for key in config}
+DEFAULTS = {key: getattr(market_maker, key) for config in CONFIGS.values() for key in config}
 
 
 def main() -> None:
@@ -276,9 +276,9 @@ def main() -> None:
     print("-" * 105)
     for name, overrides in CONFIGS.items():
         for key, value in DEFAULTS.items():
-            setattr(Market_Maker, key, value)
+            setattr(market_maker, key, value)
         for key, value in overrides.items():
-            setattr(Market_Maker, key, value)
+            setattr(market_maker, key, value)
         m = run_field(args.sessions, args.days)
         print(f"{name:<20}{m['mean']:>8.1f}{m['median']:>8.1f}{m['worst']:>9.1f}{m['rank']:>7.2f}"
               f"{m['win_rate']:>7.0%}{m['beat_sharp']:>8.0%}{m['rfq_per_contract']:>9.4f}"

@@ -27,8 +27,8 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 
 import traceback
 
-import Market_Maker
-from Market_Maker import (
+import market_maker
+from market_maker import (
     AJARAI_NAME,
     AJARAI_UNDERLYING_ID,
     FED_FUNDS_RATE_NAME,
@@ -185,13 +185,13 @@ def main() -> None:
     # behaviour it guards drifted underneath: raising _FOK_RISK_FRACTION from
     # 0.120 to 0.250 doubled the risk taken on an unproven convention, and the
     # literals disguised which of the two budgets had actually moved.
-    confident_budget = Market_Maker._FOK_RISK_FRACTION * confident._available_capital()
-    cautious_budget = Market_Maker._FOK_UNPROVEN_RISK_SCALE * confident_budget
+    confident_budget = market_maker._FOK_RISK_FRACTION * confident._available_capital()
+    cautious_budget = market_maker._FOK_UNPROVEN_RISK_SCALE * confident_budget
     # Size the clip to sit midway between the two budgets, so the ONLY thing that
     # can separate the two makers is the unproven-convention discount.
     quantity = min(
         int(((cautious_budget + confident_budget) / 2.0) / price),
-        Market_Maker._MAXIMUM_POSITION_PER_OPTION,
+        market_maker._MAXIMUM_POSITION_PER_OPTION,
     )
     big = FokOrder(counterparty_id=2, option_id=option.option_id,
                    order_type=OrderType.SELL, price=price, quantity=quantity)

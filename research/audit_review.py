@@ -38,8 +38,8 @@ import math
 import random
 import traceback
 
-import Market_Maker
-from Market_Maker import (
+import market_maker
+from market_maker import (
     AJARAI_NAME,
     AJARAI_UNDERLYING_ID,
     FED_FUNDS_RATE_NAME,

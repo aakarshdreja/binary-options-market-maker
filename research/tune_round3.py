@@ -26,7 +26,7 @@ import math
 import statistics
 import sys
 
-import Market_Maker
+import market_maker
 from simulate_session import COMPETITOR_SETS, Session
 from validate_estimation import SCENARIOS
 
@@ -58,7 +58,7 @@ CONFIGS: dict[str, dict[str, float]] = {
     "skew only": {"_INVENTORY_SKEW": 0.060, "_MAXIMUM_POSITION_PER_OPTION": 25},
 }
 
-DEFAULTS = {key: getattr(Market_Maker, key) for config in CONFIGS.values() for key in config}
+DEFAULTS = {key: getattr(market_maker, key) for config in CONFIGS.values() for key in config}
 
 
 def evaluate(sessions: int, days: int) -> tuple[list[float], list[str], int]:
@@ -103,9 +103,9 @@ def main() -> None:
     print("-" * 101)
     for name, overrides in CONFIGS.items():
         for key, value in DEFAULTS.items():
-            setattr(Market_Maker, key, value)
+            setattr(market_maker, key, value)
         for key, value in overrides.items():
-            setattr(Market_Maker, key, value)
+            setattr(market_maker, key, value)
 
         pnls, labels, bankruptcies = evaluate(sessions, days)
         if baseline_pnls is None:

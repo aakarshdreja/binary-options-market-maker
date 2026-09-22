@@ -20,7 +20,7 @@ import random
 import statistics
 from dataclasses import dataclass, field
 
-from Market_Maker import (
+from market_maker import (
     AJARAI_NAME,
     AJARAI_UNDERLYING_ID,
     FED_FUNDS_RATE_NAME,

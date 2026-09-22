@@ -37,7 +37,7 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 import argparse
 import statistics
 
-import Market_Maker
+import market_maker
 from simulate_field import FIELD, FieldSession
 from validate_estimation import SCENARIOS
 
@@ -90,7 +90,7 @@ CONFIGS: dict[str, dict[str, float]] = {
                "_TRADE_RISK_FRACTION": 0.050},
 }
 
-DEFAULTS = {key: getattr(Market_Maker, key) for config in CONFIGS.values() for key in config}
+DEFAULTS = {key: getattr(market_maker, key) for config in CONFIGS.values() for key in config}
 
 
 def paired(current: list[float], base: list[float]) -> tuple[float, float, float]:
@@ -109,7 +109,7 @@ def main() -> None:
     args = parser.parse_args()
 
     for key, value in DEFAULTS.items():
-        setattr(Market_Maker, key, value)
+        setattr(market_maker, key, value)
     base = run(args.sessions, args.days)
     base_blend = blended(base)
     total = len(base["wins"])
@@ -122,9 +122,9 @@ def main() -> None:
 
     for name, overrides in CONFIGS.items():
         for key, value in DEFAULTS.items():
-            setattr(Market_Maker, key, value)
+            setattr(market_maker, key, value)
         for key, value in overrides.items():
-            setattr(Market_Maker, key, value)
+            setattr(market_maker, key, value)
 
         outcome = run(args.sessions, args.days)
         win_rate = statistics.fmean(outcome["wins"])
@@ -140,7 +140,7 @@ def main() -> None:
               f"{d_blend:>+8.3f}{t_blend:>7.2f}", flush=True)
 
     for key, value in DEFAULTS.items():
-        setattr(Market_Maker, key, value)
+        setattr(market_maker, key, value)
 
 
 if __name__ == "__main__":

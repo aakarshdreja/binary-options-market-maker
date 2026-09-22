@@ -3,7 +3,7 @@
 Generates history from known parameters using the real simulator, runs `warm_up`,
 then compares estimated prices against true-parameter prices across a spread of
 options. Pricing error is what matters here, not parameter error -- several
-parameters are unidentifiable by construction (see the note in Market_Maker.py).
+parameters are unidentifiable by construction (see the note in market_maker.py).
 """
 
 import sys as _sys
@@ -13,8 +13,8 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 import random
 import statistics
 
-import Market_Maker
-from Market_Maker import (
+import market_maker
+from market_maker import (
     AJARAI_NAME,
     AJARAI_UNDERLYING_ID,
     FED_FUNDS_RATE_NAME,
@@ -136,9 +136,9 @@ def main() -> None:
                     # coverage test that silently stops tracking the quoting
                     # logic it is supposed to police is worse than no test.
                     half_spread = min(
-                        Market_Maker._MAXIMUM_HALF_SPREAD,
-                        Market_Maker._BASE_HALF_SPREAD
-                        + Market_Maker._UNCERTAINTY_MULTIPLIER * uncertainty,
+                        market_maker._MAXIMUM_HALF_SPREAD,
+                        market_maker._BASE_HALF_SPREAD
+                        + market_maker._UNCERTAINTY_MULTIPLIER * uncertainty,
                     )
                     errors.append(error)
                     predictions.append(uncertainty)

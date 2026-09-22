@@ -16,7 +16,7 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 import statistics
 import sys
 
-import Market_Maker
+import market_maker
 from simulate_session import COMPETITOR_SETS, Session
 from validate_estimation import SCENARIOS
 
@@ -37,7 +37,7 @@ CONFIGS: dict[str, dict[str, float]] = {
                 "_BASE_HALF_SPREAD": 0.030, "_UNCERTAINTY_MULTIPLIER": 1.8, "_INVENTORY_SKEW": 0.060},
 }
 
-DEFAULTS = {key: getattr(Market_Maker, key) for config in CONFIGS.values() for key in config}
+DEFAULTS = {key: getattr(market_maker, key) for config in CONFIGS.values() for key in config}
 
 
 def evaluate(sessions: int, days: int) -> dict[str, float]:
@@ -73,9 +73,9 @@ def main() -> None:
     print("-" * 79)
     for name, overrides in CONFIGS.items():
         for key, value in DEFAULTS.items():
-            setattr(Market_Maker, key, value)
+            setattr(market_maker, key, value)
         for key, value in overrides.items():
-            setattr(Market_Maker, key, value)
+            setattr(market_maker, key, value)
         metrics = evaluate(sessions, days)
         print(f"{name:<20}{metrics['mean']:>8.1f}{metrics['median']:>8.1f}{metrics['easy']:>8.1f}"
               f"{metrics['medium']:>8.1f}{metrics['hard']:>8.1f}{metrics['worst']:>9.1f}"

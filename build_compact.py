@@ -1,4 +1,4 @@
-"""Produce a paste-sized `Market_Maker_compact.py` that is provably the same code.
+"""Produce a paste-sized `market_maker_compact.py` that is provably the same code.
 
 HackerRank returned a server error on submit. The code parses cleanly on 3.12 and
 3.13 and imports nothing outside the standard library, so the likely culprit is
@@ -88,9 +88,9 @@ def normalise(tree: ast.AST) -> str:
 
 
 def main() -> None:
-    source = open("Market_Maker.py").read()
+    source = open("market_maker.py").read()
     compact = strip(source)
-    open("Market_Maker_compact.py", "w").write(compact)
+    open("market_maker_compact.py", "w").write(compact)
 
     original_dump = normalise(ast.parse(source))
     compact_dump = normalise(ast.parse(compact))

@@ -17,7 +17,7 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 import argparse
 import statistics
 
-import Market_Maker
+import market_maker
 from simulate_session import COMPETITOR_SETS, Session
 from validate_estimation import SCENARIOS
 
@@ -73,7 +73,7 @@ def evaluate(sessions: int, days: int) -> dict[str, float]:
 
 def apply(config: dict[str, float]) -> None:
     for key, value in config.items():
-        setattr(Market_Maker, key, value)
+        setattr(market_maker, key, value)
 
 
 def score(metrics: dict[str, float]) -> float:
@@ -90,7 +90,7 @@ def main() -> None:
     parser.add_argument("--rounds", type=int, default=2)
     args = parser.parse_args()
 
-    config = {name: getattr(Market_Maker, name) for name in TUNABLE}
+    config = {name: getattr(market_maker, name) for name in TUNABLE}
     apply(config)
     best_metrics = evaluate(args.sessions, args.days)
     best_score = score(best_metrics)

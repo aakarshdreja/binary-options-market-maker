@@ -27,7 +27,7 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 import argparse
 import statistics
 
-from Market_Maker import FED_FUNDS_RATE_UNDERLYING_ID, BinaryOption
+from market_maker import FED_FUNDS_RATE_UNDERLYING_ID, BinaryOption
 from simulate_session import COMPETITOR_SETS, Session
 from validate_estimation import SCENARIOS
 

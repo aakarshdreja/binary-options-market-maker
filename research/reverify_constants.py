@@ -25,7 +25,7 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 import argparse
 import statistics
 
-import Market_Maker
+import market_maker
 from simulate_field import FIELD, FieldSession
 from validate_estimation import SCENARIOS
 
@@ -78,12 +78,12 @@ def main() -> None:
 
     flagged: list[str] = []
     for name, values in SWEEPS.items():
-        incumbent = getattr(Market_Maker, name)
+        incumbent = getattr(market_maker, name)
         print(f"{name}  (incumbent {incumbent})")
         print(f"{'value':>10}{'mean':>9}{'median':>9}{'p10':>8}{'worst':>9}"
               f"{'>0':>7}{'win%':>7}{'bank':>6}{'d(base)':>9}{'t':>7}")
         for value in values:
-            setattr(Market_Maker, name, value)
+            setattr(market_maker, name, value)
             pnls, bankruptcies, wins = run(args.sessions, args.days)
             differences = [a - b for a, b in zip(pnls, base)]
             mean_difference = statistics.fmean(differences)
@@ -101,7 +101,7 @@ def main() -> None:
                   f"{p10:>8.1f}{min(pnls):>9.1f}{positive:>7.0%}{wins / len(pnls):>7.0%}"
                   f"{bankruptcies:>6}{mean_difference:>+9.2f}{t_statistic:>7.2f}{marker}",
                   flush=True)
-        setattr(Market_Maker, name, incumbent)
+        setattr(market_maker, name, incumbent)
         print()
 
     print("-" * 84)

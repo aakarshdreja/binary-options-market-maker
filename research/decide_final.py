@@ -30,7 +30,7 @@ import argparse
 import math
 import statistics
 
-import Market_Maker
+import market_maker
 from simulate_field import FIELD, FieldSession
 from simulate_session import COMPETITOR_SETS, Session
 from validate_estimation import SCENARIOS
@@ -43,7 +43,7 @@ CANDIDATES: dict[str, dict[str, float]] = {
     "tight + no fok unc": {"_BASE_HALF_SPREAD": 0.012, "_FOK_UNCERTAINTY_MULTIPLIER": 0.0},
 }
 
-DEFAULTS = {key: getattr(Market_Maker, key) for config in CANDIDATES.values() for key in config}
+DEFAULTS = {key: getattr(market_maker, key) for config in CANDIDATES.values() for key in config}
 
 
 def evaluate(sessions: int, days: int, realistic: bool) -> tuple[list[float], list[float], int]:
@@ -81,9 +81,9 @@ def main() -> None:
         incumbent: list[float] | None = None
         for name, overrides in CANDIDATES.items():
             for key, value in DEFAULTS.items():
-                setattr(Market_Maker, key, value)
+                setattr(market_maker, key, value)
             for key, value in overrides.items():
-                setattr(Market_Maker, key, value)
+                setattr(market_maker, key, value)
 
             pnls, ranks, bankruptcies = evaluate(args.sessions, args.days, realistic)
             if incumbent is None:

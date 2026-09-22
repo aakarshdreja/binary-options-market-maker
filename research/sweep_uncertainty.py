@@ -31,7 +31,7 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 import argparse
 import statistics
 
-import Market_Maker
+import market_maker
 from simulate_field import FIELD, FieldSession
 from validate_estimation import SCENARIOS
 
@@ -70,8 +70,8 @@ def main() -> None:
     parser.add_argument("--days", type=int, default=25)
     args = parser.parse_args()
 
-    base_rate = Market_Maker._RATE_ERROR_SCALE
-    base_multiplier = Market_Maker._UNCERTAINTY_MULTIPLIER
+    base_rate = market_maker._RATE_ERROR_SCALE
+    base_multiplier = market_maker._UNCERTAINTY_MULTIPLIER
     base, _ = run(args.sessions, args.days)
 
     print(f"\n{len(base)} paired sessions per cell; baseline is "
@@ -82,8 +82,8 @@ def main() -> None:
 
     for rate_scale in RATE_SCALES:
         for multiplier in MULTIPLIERS:
-            Market_Maker._RATE_ERROR_SCALE = rate_scale
-            Market_Maker._UNCERTAINTY_MULTIPLIER = multiplier
+            market_maker._RATE_ERROR_SCALE = rate_scale
+            market_maker._UNCERTAINTY_MULTIPLIER = multiplier
             pnls, bankruptcies = run(args.sessions, args.days)
             differences = [a - b for a, b in zip(pnls, base)]
             mean_difference = statistics.fmean(differences)
@@ -100,8 +100,8 @@ def main() -> None:
                   f"{bankruptcies:>6}{marker}", flush=True)
         print()
 
-    Market_Maker._RATE_ERROR_SCALE = base_rate
-    Market_Maker._UNCERTAINTY_MULTIPLIER = base_multiplier
+    market_maker._RATE_ERROR_SCALE = base_rate
+    market_maker._UNCERTAINTY_MULTIPLIER = base_multiplier
 
 
 if __name__ == "__main__":

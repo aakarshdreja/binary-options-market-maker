@@ -25,7 +25,7 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 import argparse
 import statistics
 
-import Market_Maker
+import market_maker
 from simulate_field import FIELD, FieldSession
 from validate_estimation import SCENARIOS
 
@@ -68,7 +68,7 @@ CONFIGS: dict[str, dict[str, float]] = {
                              "_TRADE_RISK_FRACTION": 0.050},
 }
 
-DEFAULTS = {key: getattr(Market_Maker, key)
+DEFAULTS = {key: getattr(market_maker, key)
             for config in CONFIGS.values() for key in config}
 
 
@@ -79,7 +79,7 @@ def main() -> None:
     args = parser.parse_args()
 
     for key, value in DEFAULTS.items():
-        setattr(Market_Maker, key, value)
+        setattr(market_maker, key, value)
     base = run(args.sessions, args.days)
 
     print(f"\n{len(base)} paired sessions per config\n")
@@ -89,9 +89,9 @@ def main() -> None:
 
     for name, overrides in CONFIGS.items():
         for key, value in DEFAULTS.items():
-            setattr(Market_Maker, key, value)
+            setattr(market_maker, key, value)
         for key, value in overrides.items():
-            setattr(Market_Maker, key, value)
+            setattr(market_maker, key, value)
 
         pnls = run(args.sessions, args.days)
         differences = [a - b for a, b in zip(pnls, base)]
@@ -105,7 +105,7 @@ def main() -> None:
               f"{run.bankruptcies:>6}", flush=True)
 
     for key, value in DEFAULTS.items():
-        setattr(Market_Maker, key, value)
+        setattr(market_maker, key, value)
 
 
 if __name__ == "__main__":

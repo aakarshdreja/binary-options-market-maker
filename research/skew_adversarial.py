@@ -28,7 +28,7 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 import argparse
 import statistics
 
-import Market_Maker
+import market_maker
 from simulate_field import FIELD, FieldSession
 from validate_estimation import SCENARIOS
 from large_flow_check import ScaledFlow
@@ -64,7 +64,7 @@ def main() -> None:
     parser.add_argument("--days", type=int, default=30)
     args = parser.parse_args()
 
-    incumbent = Market_Maker._INVENTORY_SKEW
+    incumbent = market_maker._INVENTORY_SKEW
     for scale in (1, 4):
         print(f"\n=== adversarial field (50-80% informed), flow x{scale}, "
               f"{args.days}-day sessions ===")
@@ -72,7 +72,7 @@ def main() -> None:
               f"{'>0':>7}{'win%':>7}{'bank':>6}{'peak pos':>10}{'d':>8}{'t':>7}")
         base: list[float] | None = None
         for value in VALUES:
-            Market_Maker._INVENTORY_SKEW = value
+            market_maker._INVENTORY_SKEW = value
             pnls, bankruptcies, wins, concentration = run(scale, args.sessions, args.days)
             if value == incumbent:
                 pass
@@ -100,7 +100,7 @@ def main() -> None:
                   f"t={mean_difference / error if error else 0.0:+.2f}")
         globals()["_pending"] = {}
 
-    Market_Maker._INVENTORY_SKEW = incumbent
+    market_maker._INVENTORY_SKEW = incumbent
 
 
 if __name__ == "__main__":

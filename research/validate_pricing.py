@@ -11,7 +11,7 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 import math
 import random
 
-from Market_Maker import (
+from market_maker import (
     AJARAI_NAME,
     AJARAI_UNDERLYING_ID,
     FED_FUNDS_RATE_NAME,
