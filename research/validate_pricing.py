@@ -4,6 +4,10 @@ Not part of the submission -- this only exists to prove `price_option_from_param
 matches `MarketParameters.advance_step`, which is the ground truth the grader uses.
 """
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+
 import math
 import random
 

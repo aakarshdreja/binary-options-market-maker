@@ -18,6 +18,10 @@ config that buys mean PnL with tail risk is a bad trade under a grader that pays
 ZERO for a bankruptcy.
 """
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+
 import argparse
 import statistics
 

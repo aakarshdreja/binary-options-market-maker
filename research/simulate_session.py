@@ -10,6 +10,10 @@ they never mis-price, so any edge we show comes from spread discipline and risk
 management rather than from opponents being dumb.
 """
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+
 import argparse
 import math
 import random

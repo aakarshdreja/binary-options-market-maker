@@ -30,6 +30,10 @@ rather than omnisciently right, should we be trading MORE aggressively than the
 settings we tuned in the pessimistic field?
 """
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+
 import argparse
 import math
 import random
@@ -240,22 +244,19 @@ def run_field(sessions: int, days: int) -> dict[str, float]:
 
 CONFIGS: dict[str, dict[str, float]] = {
     "current": {},
-    "tighter 0.012": {"_BASE_HALF_SPREAD": 0.012},
-    "tighter 0.008": {"_BASE_HALF_SPREAD": 0.008},
-    "unc x1.1": {"_UNCERTAINTY_MULTIPLIER": 1.1},
-    "tight + unc x1.1": {"_BASE_HALF_SPREAD": 0.012, "_UNCERTAINTY_MULTIPLIER": 1.1},
-    "bigger size 40": {"_MAXIMUM_QUOTE_SIZE": 40, "_MAXIMUM_POSITION_PER_OPTION": 60},
-    "more risk": {"_TRADE_RISK_FRACTION": 0.050},
-    "aggressive": {"_BASE_HALF_SPREAD": 0.012, "_UNCERTAINTY_MULTIPLIER": 1.1,
-                   "_MAXIMUM_QUOTE_SIZE": 40, "_MAXIMUM_POSITION_PER_OPTION": 60,
-                   "_TRADE_RISK_FRACTION": 0.050},
-    "very aggressive": {"_BASE_HALF_SPREAD": 0.008, "_UNCERTAINTY_MULTIPLIER": 0.9,
-                        "_MAXIMUM_QUOTE_SIZE": 50, "_MAXIMUM_POSITION_PER_OPTION": 80,
-                        "_TRADE_RISK_FRACTION": 0.070, "_FOK_RISK_FRACTION": 0.180},
-    "aggressive + fok": {"_BASE_HALF_SPREAD": 0.012, "_UNCERTAINTY_MULTIPLIER": 1.1,
-                         "_MAXIMUM_QUOTE_SIZE": 40, "_MAXIMUM_POSITION_PER_OPTION": 60,
-                         "_TRADE_RISK_FRACTION": 0.050, "_FOK_RISK_FRACTION": 0.180,
-                         "_FOK_BASE_EDGE": 0.006},
+    "tight rfq": {"_BASE_HALF_SPREAD": 0.012},
+    "fok unc x0.7": {"_FOK_UNCERTAINTY_MULTIPLIER": 0.7},
+    "fok unc x0.4": {"_FOK_UNCERTAINTY_MULTIPLIER": 0.4},
+    "fok unc x0.0": {"_FOK_UNCERTAINTY_MULTIPLIER": 0.0},
+    "tight + fok0.7": {"_BASE_HALF_SPREAD": 0.012, "_FOK_UNCERTAINTY_MULTIPLIER": 0.7},
+    "tight + fok0.4": {"_BASE_HALF_SPREAD": 0.012, "_FOK_UNCERTAINTY_MULTIPLIER": 0.4},
+    "tight + fok0.4 + risk": {"_BASE_HALF_SPREAD": 0.012, "_FOK_UNCERTAINTY_MULTIPLIER": 0.4,
+                              "_FOK_RISK_FRACTION": 0.180},
+    "tight + fok0.4 + pos": {"_BASE_HALF_SPREAD": 0.012, "_FOK_UNCERTAINTY_MULTIPLIER": 0.4,
+                             "_FOK_RISK_FRACTION": 0.180, "_MAXIMUM_POSITION_PER_OPTION": 60},
+    "all in": {"_BASE_HALF_SPREAD": 0.012, "_FOK_UNCERTAINTY_MULTIPLIER": 0.4,
+               "_FOK_RISK_FRACTION": 0.180, "_MAXIMUM_POSITION_PER_OPTION": 60,
+               "_FOK_BASE_EDGE": 0.006, "_TRADE_RISK_FRACTION": 0.050},
 }
 
 DEFAULTS = {key: getattr(Market_Maker, key) for config in CONFIGS.values() for key in config}

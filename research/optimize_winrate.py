@@ -30,6 +30,10 @@ effects of size 1-3. The paired standard error on the win-rate difference is
 computed from the per-session indicator differences, so `t` is meaningful.
 """
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+
 import argparse
 import statistics
 

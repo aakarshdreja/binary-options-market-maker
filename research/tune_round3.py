@@ -1,19 +1,26 @@
-"""Round two: the RFQ channel is a variance pump, so shrink it and feed the FOK.
+"""Round three: re-tune on top of the now-calibrated uncertainty estimate.
 
-`diagnose_pnl` measured, in the hard field, RFQ edge of -0.0053/contract over ~692
-contracts a session against FOK edge of +0.0467/contract over ~97. The RFQ number
-also degrades monotonically with the informed fraction (-0.0022 at 0.2, -0.0098 at
-0.5), which is the fingerprint of adverse selection rather than noise: we only win
-a blind auction when we are the most aggressive quote, and against competitors who
-price perfectly that means we win exactly when we are wrong.
+Rounds one and two were run against a `_price_uncertainty` that perturbed company
+drift and volatility and nothing else. A pure rate option has no company leg, so
+every one of those perturbations was a no-op and the function reported ~zero
+uncertainty -- on 30% of the book, at any history length. `diagnose_uncertainty`
+caught it: the estimate ran at 0.15x realised error on rate options at 60 days of
+history, against 2.6x on single-company options.
 
-Round one confirmed the direction -- "wider rfq" was the single best knob and
-"picky fok" was one of the worst, i.e. show less on the blind channel and take
-more of the one we get to inspect. This round pushes both further and, crucially,
-attacks SIZE as well as price. Seven hundred contracts a session at zero edge is
-not a business, it is a lottery ticket, and the session standard deviation (~33)
-dwarfs the total expected edge (~+0.9).
+Perturbing the rate lattice as well moved short-history RFQ edge from -0.0203 to
+-0.0039 per contract at 60 days, and left the long-history number untouched at
++0.0073. That matters for this round: rounds one and two both crowned blanket
+spread widening, but widening was only ever a crude proxy for "we are blind on
+rate options". Now that the blindness is priced directly, a fat constant spread
+may be pure cost, so `_BASE_HALF_SPREAD` is back on trial rather than assumed.
+
+The remaining miscalibration is a uniform 2-3x over-conservatism across every
+bucket, which is a single scalar, so `_UNCERTAINTY_MULTIPLIER` is swept too.
 """
+
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 
 import math
 import statistics
@@ -25,23 +32,30 @@ from validate_estimation import SCENARIOS
 
 CONFIGS: dict[str, dict[str, float]] = {
     "baseline": {},
+    # Is the fat spread still earning its keep now the blindness is priced?
     "wide 0.035": {"_BASE_HALF_SPREAD": 0.035},
-    "wide 0.050": {"_BASE_HALF_SPREAD": 0.050},
-    "small size 10": {"_MAXIMUM_QUOTE_SIZE": 10},
-    "small size 6": {"_MAXIMUM_QUOTE_SIZE": 6},
-    "wide + small": {"_BASE_HALF_SPREAD": 0.035, "_MAXIMUM_QUOTE_SIZE": 8},
-    "wide + tiny": {"_BASE_HALF_SPREAD": 0.050, "_MAXIMUM_QUOTE_SIZE": 5},
+    "narrow 0.012": {"_BASE_HALF_SPREAD": 0.012},
+    # The uncertainty estimate is honest but ~2.5x conservative; how much of that
+    # margin do we actually want to keep?
+    "unc x1.0": {"_UNCERTAINTY_MULTIPLIER": 1.0},
+    "unc x0.7": {"_UNCERTAINTY_MULTIPLIER": 0.7},
+    "unc x1.0 + narrow": {"_UNCERTAINTY_MULTIPLIER": 1.0, "_BASE_HALF_SPREAD": 0.012},
+    # Size and channel mix, the two robust findings from round two.
+    "small size 8": {"_MAXIMUM_QUOTE_SIZE": 8},
     "fok heavy": {"_FOK_BASE_EDGE": 0.010, "_FOK_RISK_FRACTION": 0.120},
-    "wide + fok heavy": {"_BASE_HALF_SPREAD": 0.035, "_MAXIMUM_QUOTE_SIZE": 8,
-                         "_FOK_BASE_EDGE": 0.010, "_FOK_RISK_FRACTION": 0.120},
-    "wide + fok heavy 2": {"_BASE_HALF_SPREAD": 0.050, "_MAXIMUM_QUOTE_SIZE": 5,
-                           "_FOK_BASE_EDGE": 0.010, "_FOK_RISK_FRACTION": 0.120},
-    "wide + fok + skew": {"_BASE_HALF_SPREAD": 0.035, "_MAXIMUM_QUOTE_SIZE": 8,
-                          "_FOK_BASE_EDGE": 0.010, "_FOK_RISK_FRACTION": 0.120,
-                          "_INVENTORY_SKEW": 0.060, "_MAXIMUM_POSITION_PER_OPTION": 25},
-    "wide + fok + tight unc": {"_BASE_HALF_SPREAD": 0.035, "_MAXIMUM_QUOTE_SIZE": 8,
-                               "_FOK_BASE_EDGE": 0.010, "_FOK_RISK_FRACTION": 0.120,
-                               "_UNCERTAINTY_MULTIPLIER": 1.0},
+    "small + fok heavy": {"_MAXIMUM_QUOTE_SIZE": 8,
+                          "_FOK_BASE_EDGE": 0.010, "_FOK_RISK_FRACTION": 0.120},
+    "round2 winner": {"_BASE_HALF_SPREAD": 0.035, "_MAXIMUM_QUOTE_SIZE": 8,
+                      "_FOK_BASE_EDGE": 0.010, "_FOK_RISK_FRACTION": 0.120,
+                      "_INVENTORY_SKEW": 0.060, "_MAXIMUM_POSITION_PER_OPTION": 25},
+    "r2 winner, unc x1.0": {"_BASE_HALF_SPREAD": 0.035, "_MAXIMUM_QUOTE_SIZE": 8,
+                            "_FOK_BASE_EDGE": 0.010, "_FOK_RISK_FRACTION": 0.120,
+                            "_INVENTORY_SKEW": 0.060, "_MAXIMUM_POSITION_PER_OPTION": 25,
+                            "_UNCERTAINTY_MULTIPLIER": 1.0},
+    "r2 winner, base 0.020": {"_MAXIMUM_QUOTE_SIZE": 8,
+                              "_FOK_BASE_EDGE": 0.010, "_FOK_RISK_FRACTION": 0.120,
+                              "_INVENTORY_SKEW": 0.060, "_MAXIMUM_POSITION_PER_OPTION": 25},
+    "skew only": {"_INVENTORY_SKEW": 0.060, "_MAXIMUM_POSITION_PER_OPTION": 25},
 }
 
 DEFAULTS = {key: getattr(Market_Maker, key) for config in CONFIGS.values() for key in config}

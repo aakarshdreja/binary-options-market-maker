@@ -17,6 +17,8 @@ No prior finance background is assumed below. Every term is defined before it is
 
 ## The problem, explained from scratch
 
+My own condensed restatement of the official brief is at [`docs/problem_statement.md`](docs/problem_statement.md); this section expands on it for a reader with no prior context.
+
 ### What a binary option is
 
 A binary option (also called an event contract) is a bet on whether some future statement is true or false. It pays out exactly **1.0** if the statement turns out true, and **0.0** otherwise. For example: "will the Fed funds rate be at least 3.0% in 3 days." Because the payout is capped at 1.0, the fair price of the contract is simply the probability that the statement is true. A contract that is 70% likely to happen is worth about $0.70 today.
@@ -97,24 +99,33 @@ I only accept a FOK order if my price versus their price gives me more edge than
 
 ## How I validated it before submitting
 
-Since the real grader isn't available to test against ahead of time, I built my own local simulator that reproduces its rules exactly (worst case cash debits, expiry driven credits, end of day solvency checks) and used it to drive the whole research process, which lives in the top level scripts alongside the solution:
+Since the real grader isn't available to test against ahead of time, I built my own local simulator that reproduces its rules exactly (worst case cash debits, expiry driven credits, end of day solvency checks) and used it to drive the whole research process, which lives in [`research/`](research):
 
-- **Correctness checks**: [`validate_pricing.py`](validate_pricing.py) compares the closed form pricer against brute force Monte Carlo simulation of the real dynamics. [`validate_estimation.py`](validate_estimation.py) checks that `warm_up` recovers enough of the true model to price accurately from a range of history lengths. [`test_fok_convention.py`](test_fok_convention.py) verifies the buy/sell side detector described above actually works, in both possible conventions.
-- **Diagnostics**: [`diagnose_pnl.py`](diagnose_pnl.py), [`diagnose_history.py`](diagnose_history.py), [`diagnose_uncertainty.py`](diagnose_uncertainty.py) and [`diagnose_calibration.py`](diagnose_calibration.py) trace exactly where profit and loss come from and whether the quoted spread is honestly calibrated to realised pricing error. This is how I caught, for example, that rate-only contracts were getting an uncertainty estimate of nearly zero, because the calculation only perturbed company parameters and never the rate parameters, until it was fixed.
-- **Tuning**: [`tune_parameters.py`](tune_parameters.py), [`tune_round2.py`](tune_round2.py), [`tune_round3.py`](tune_round3.py), [`tune_focused.py`](tune_focused.py), [`sweep_uncertainty.py`](sweep_uncertainty.py), [`sweep_spread.py`](sweep_spread.py) and [`optimize_winrate.py`](optimize_winrate.py) search the quoting and risk constants against the simulator, optimizing for the metric the grader actually pays (relative rank and bankruptcy avoidance, not raw mean PnL).
-- **Adversarial and stress testing**: [`skew_adversarial.py`](skew_adversarial.py), [`stress_uncertainty.py`](stress_uncertainty.py), [`large_flow_check.py`](large_flow_check.py) and [`ab_counterparty.py`](ab_counterparty.py) check whether a tuned setting still holds up against a counterparty that specifically targets it, or against much larger order flow than the tuning sessions used.
-- **Statistical discipline**: comparisons are paired (same random seed for every candidate config, so differences reflect the config and not luck) and judged by significance (t-statistics), not by eyeballing an average. This is also what caught a real bug: [`reverify_constants.py`](reverify_constants.py) found that several earlier "winning" tuning decisions had been measured against *different, randomly reseeded* competitor pools across runs, making the comparisons invalid, and re-ran them properly.
-- **Final gate**: [`final_audit.py`](final_audit.py) replays the grader's exact solvency rule against deliberately hostile inputs (a one point history, a rate stuck at zero, extreme values) to make sure nothing crashes or goes bankrupt before submission. [`decide_final.py`](decide_final.py) and [`final_standings.py`](final_standings.py) run the fully tuned strategy through many paired sessions against a simulated field of five rival archetypes (`sharp`, `montecarlo`, `norate`, `nocorr`, `crude`, described in [`simulate_field.py`](simulate_field.py)) for a last check before submitting.
+- **Correctness checks**: [`validate_pricing.py`](research/validate_pricing.py) compares the closed form pricer against brute force Monte Carlo simulation of the real dynamics. [`validate_estimation.py`](research/validate_estimation.py) checks that `warm_up` recovers enough of the true model to price accurately from a range of history lengths. [`test_fok_convention.py`](research/test_fok_convention.py) verifies the buy/sell side detector described above actually works, in both possible conventions.
+- **Diagnostics**: [`diagnose_pnl.py`](research/diagnose_pnl.py), [`diagnose_history.py`](research/diagnose_history.py), [`diagnose_uncertainty.py`](research/diagnose_uncertainty.py) and [`diagnose_calibration.py`](research/diagnose_calibration.py) trace exactly where profit and loss come from and whether the quoted spread is honestly calibrated to realised pricing error. This is how I caught, for example, that rate-only contracts were getting an uncertainty estimate of nearly zero, because the calculation only perturbed company parameters and never the rate parameters, until it was fixed.
+- **Tuning**: [`tune_parameters.py`](research/tune_parameters.py), [`tune_round2.py`](research/tune_round2.py), [`tune_round3.py`](research/tune_round3.py), [`tune_focused.py`](research/tune_focused.py), [`sweep_uncertainty.py`](research/sweep_uncertainty.py), [`sweep_spread.py`](research/sweep_spread.py) and [`optimize_winrate.py`](research/optimize_winrate.py) search the quoting and risk constants against the simulator, optimizing for the metric the grader actually pays (relative rank and bankruptcy avoidance, not raw mean PnL).
+- **Adversarial and stress testing**: [`skew_adversarial.py`](research/skew_adversarial.py), [`stress_uncertainty.py`](research/stress_uncertainty.py), [`large_flow_check.py`](research/large_flow_check.py) and [`ab_counterparty.py`](research/ab_counterparty.py) check whether a tuned setting still holds up against a counterparty that specifically targets it, or against much larger order flow than the tuning sessions used.
+- **Statistical discipline**: comparisons are paired (same random seed for every candidate config, so differences reflect the config and not luck) and judged by significance (t-statistics), not by eyeballing an average. This is also what caught a real bug: [`reverify_constants.py`](research/reverify_constants.py) found that several earlier "winning" tuning decisions had been measured against *different, randomly reseeded* competitor pools across runs, making the comparisons invalid, and re-ran them properly.
+- **Final gate**: [`final_audit.py`](research/final_audit.py) replays the grader's exact solvency rule against deliberately hostile inputs (a one point history, a rate stuck at zero, extreme values) to make sure nothing crashes or goes bankrupt before submission. [`decide_final.py`](research/decide_final.py) and [`final_standings.py`](research/final_standings.py) run the fully tuned strategy through many paired sessions against a simulated field of five rival archetypes (`sharp`, `montecarlo`, `norate`, `nocorr`, `crude`, described in [`simulate_field.py`](research/simulate_field.py)) for a last check before submitting.
 
 These are figures from my own local simulator, not an official grade: across 90 paired sessions against the simulated field, the final configuration averaged a PnL rank of about 2.3 out of 6 players (1st is best) with zero bankruptcies in either a realistic field (rivals estimate the model, same as I do) or a pessimistic one (rivals are handed the true parameters).
 
 ## Repository layout
 
-| File | What it is |
+```
+.
+├── Market_Maker.py            the solution, fully documented
+├── Market_Maker_compact.py    same logic, comment-stripped for size-limited submission
+├── make_compact.py            generates the file above from the one above it
+├── docs/
+│   └── problem_statement.md   my own condensed restatement of the official brief
+└── research/                  the simulator, validation, tuning and audit scripts
+```
+
+Every file in `research/` imports `Market_Maker` straight from the repository root (each one carries a short `sys.path` snippet at the top for that), so they can all still be run directly, individually, exactly as they were during development. Grouped by purpose:
+
+| Files in `research/` | What they are |
 |---|---|
-| [`Market_Maker.py`](Market_Maker.py) | The solution, fully documented. Contains the template classes (`BinaryOption`, `MarketParameters`, `Quote`, etc.) plus the `MarketMaker` implementation. |
-| [`Market_Maker_compact.py`](Market_Maker_compact.py) | Identical logic with comments stripped, for platforms with a submission size limit. Generated by [`make_compact.py`](make_compact.py). |
-| [`problem_statement.md`](problem_statement.md) | My own condensed restatement of the official problem brief. |
 | `validate_*.py`, `test_*.py` | Correctness checks against the true simulator dynamics. |
 | `diagnose_*.py`, `experiment_estimation.py` | Investigations into where PnL comes from and whether estimates are well calibrated. |
 | `tune_*.py`, `sweep_*.py`, `optimize_winrate.py` | Searches over the quoting and risk constants. |
@@ -125,12 +136,12 @@ These are figures from my own local simulator, not an official grade: across 90 
 
 ## Running it yourself
 
-Requirements: Python 3.12 or newer, standard library only, no external dependencies.
+Requirements: Python 3.12 or newer, standard library only, no external dependencies. Run scripts from the repository root:
 
 ```bash
-python validate_pricing.py
-python validate_estimation.py
-python final_audit.py
+python research/validate_pricing.py
+python research/validate_estimation.py
+python research/final_audit.py
 ```
 
 Each script is self-contained and prints its own results to the console; most also carry a docstring at the top explaining what question they were written to answer.

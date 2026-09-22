@@ -24,6 +24,10 @@ the global multiplier made the genuinely dangerous cells worse. That result does
 not transfer, so the pair has to be swept jointly rather than one at a time.
 """
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+
 import argparse
 import statistics
 

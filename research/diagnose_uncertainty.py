@@ -20,6 +20,10 @@ A `ratio` near 1.0 means honest. Well under 1.0 means we are quoting tighter tha
 our own ignorance justifies, which is how you lose money while looking profitable.
 """
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+
 import argparse
 import statistics
 

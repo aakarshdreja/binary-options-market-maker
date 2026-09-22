@@ -5,6 +5,10 @@ shrinkage may be over-tuned. This measures variants head to head so the choice
 is made on evidence rather than taste.
 """
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+
 import math
 import statistics
 

@@ -22,6 +22,10 @@ the prize is awarded on relative profitability, and the worst session matters
 because a bankruptcy scores zero no matter how good the mean was.
 """
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+
 import argparse
 import math
 import statistics

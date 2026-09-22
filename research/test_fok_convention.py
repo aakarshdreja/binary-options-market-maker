@@ -21,6 +21,10 @@ Also pinned here are the two failure modes that made the original detector unsaf
      fraction of the usual budget, so that being wrong is survivable.
 """
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+
 import traceback
 
 import Market_Maker

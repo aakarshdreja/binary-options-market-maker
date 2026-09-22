@@ -22,6 +22,10 @@ they were put there for, and the sweep was measuring an environment too gentle t
 price them.
 """
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+
 import argparse
 import statistics
 

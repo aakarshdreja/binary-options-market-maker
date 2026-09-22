@@ -24,6 +24,10 @@ Section 3 then fuzzes every method the grader calls, because an uncaught excepti
 is scored identically to a blow-up.
 """
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+
 import math
 import random
 import traceback

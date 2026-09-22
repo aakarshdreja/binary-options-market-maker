@@ -21,6 +21,10 @@ the concentration blows out, the sweep was measuring a field too friendly to
 price it, and 0.035 stays.
 """
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+
 import argparse
 import statistics
 

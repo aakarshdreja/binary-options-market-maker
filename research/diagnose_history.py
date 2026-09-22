@@ -17,6 +17,10 @@ the options we actually traded, which pins down whether `_price_uncertainty` is
 calibrated rather than merely directionally correct.
 """
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+
 import argparse
 import statistics
 

@@ -6,6 +6,10 @@ produce: no warm-up, near-empty history, an underlying that never moves, extreme
 strikes, long tenors, and a market maker that has already burned through its cash.
 """
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+
 import math
 import random
 import traceback

@@ -10,6 +10,10 @@ Bankruptcy scores zero, so any config with a single bankruptcy is rejected
 outright regardless of PnL.
 """
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+
 import argparse
 import statistics
 

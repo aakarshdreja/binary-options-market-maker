@@ -30,6 +30,10 @@ The claims, and what each test settles:
       -> This one is real. Tested explicitly below.
 """
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+
 import math
 import random
 import traceback

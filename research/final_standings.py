@@ -10,6 +10,10 @@ handicapped only by persistent parameter error. If we cannot beat that, our edge
 is the estimator rather than the strategy.
 """
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+
 import statistics
 
 from simulate_field import FIELD, FieldSession
