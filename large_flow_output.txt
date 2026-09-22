@@ -1,0 +1,30 @@
+
+=== flow x1  (RFQ clips 1-15, FOK clips 1-12) ===
+incumbent: mean 10.10  p10 3.1  worst -3.2  win 25%  bankrupt 0/72
+constant                         value     mean     p10    worst   win%  bank       d      t
+_INVENTORY_SKEW                    0.0    10.40     3.2     -2.8    25%     0   +0.30   7.46
+_INVENTORY_SKEW                   0.02    10.28     3.2     -2.9    25%     0   +0.18   6.99
+_MAXIMUM_POSITION_PER_OPTION       260    10.22     3.2     -2.9    25%     0   +0.12   5.42
+_TRADE_RISK_FRACTION             0.045    10.14     3.1     -3.2    26%     0   +0.04   4.78
+_SAFETY_BUFFER_FRACTION           0.05    10.12     3.1     -3.2    25%     0   +0.02   3.91
+_EXPIRY_CAPITAL_PENALTY            0.1    10.14     3.1     -3.2    26%     0   +0.04   4.78
+
+=== flow x4  (RFQ clips 1-60, FOK clips 1-48) ===
+incumbent: mean 40.51  p10 0.1  worst -82.3  win 33%  bankrupt 0/72
+constant                         value     mean     p10    worst   win%  bank       d      t
+_INVENTORY_SKEW                    0.0    42.12     0.2    -81.1    35%     0   +1.60   3.42
+_INVENTORY_SKEW                   0.02    40.99    -1.2    -82.4    35%     0   +0.47   2.52
+_MAXIMUM_POSITION_PER_OPTION       260    40.69    -0.4    -82.3    35%     0   +0.17   1.74
+_TRADE_RISK_FRACTION             0.045    45.62     2.0    -95.9    38%     0   +5.10   6.95
+_SAFETY_BUFFER_FRACTION           0.05    42.26     0.6    -87.0    36%     0   +1.75   7.55
+_EXPIRY_CAPITAL_PENALTY            0.1    42.42    -0.6    -89.2    38%     0   +1.91   4.69
+
+=== flow x10  (RFQ clips 1-150, FOK clips 1-120) ===
+incumbent: mean 402.85  p10 173.5  worst -45.9  win 93%  bankrupt 0/72
+constant                         value     mean     p10    worst   win%  bank       d      t
+_INVENTORY_SKEW                    0.0   406.18   175.3    -42.9    93%     0   +3.33   2.37
+_INVENTORY_SKEW                   0.02   403.76   171.9    -44.8    93%     0   +0.92   0.95
+_MAXIMUM_POSITION_PER_OPTION       260   404.54   159.2    -52.9    93%     0   +1.70   0.66
+_TRADE_RISK_FRACTION             0.045   450.16   182.2    -63.3    93%     0  +47.32   8.37
+_SAFETY_BUFFER_FRACTION           0.05   420.97   188.9    -42.1    93%     0  +18.13  11.67
+_EXPIRY_CAPITAL_PENALTY            0.1   421.32   169.9    -42.2    93%     0  +18.48   4.74

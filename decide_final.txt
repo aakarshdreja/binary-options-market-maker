@@ -1,0 +1,18 @@
+
+REALISTIC field (rivals estimate)
+candidate                 mean  median    worst   rank   d(inc)     se      t  bankrupt
+---------------------------------------------------------------------------------------
+incumbent                 7.89    7.69    -13.4   2.34     0.00   0.00   0.00     0/90  
+tight rfq                 8.39    8.42    -14.0   2.29     0.50   0.24   2.11     0/90  
+loose fok                 7.94    8.08    -17.4   2.39     0.05   0.44   0.10     0/90  
+tight + loose fok         8.46    8.68    -23.1   2.33     0.57   0.52   1.10     0/90  
+tight + no fok unc        8.96    8.58    -19.4   2.32     1.06   0.62   1.71     0/90  
+
+PESSIMISTIC field (rivals omniscient)
+candidate                 mean  median    worst   rank   d(inc)     se      t  bankrupt
+---------------------------------------------------------------------------------------
+incumbent                 3.21    6.06    -34.1   2.76     0.00   0.00   0.00     0/90  
+tight rfq                 3.84    6.01    -36.1   2.73     0.63   0.45   1.39     0/90  
+loose fok                 2.84    5.48    -43.8   2.76    -0.38   0.56  -0.67     0/90  
+tight + loose fok         3.41    6.13    -43.9   2.78     0.20   0.71   0.28     0/90  
+tight + no fok unc        4.22    6.75    -41.7   2.67     1.01   0.79   1.27     0/90  

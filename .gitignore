@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.cph/
+.claude/
+tune_log.txt
+
+# Competition materials with unclear redistribution rights, kept locally only
+Problem statement.png
+Virtual_Quant_Trading_Challenge_2026.pdf
+
+# Unrelated scratch files from other problems
+D_1_Inversion_Graph_Coloring_Easy_Version.cpp
+D_Trading_Bot_Simulation.cpp
